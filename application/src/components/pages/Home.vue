@@ -23,7 +23,7 @@
   const WarehouseManagerAPI = `http://${window.location.hostname}:3002`
   export default {
     components: {
-      'product-list-header': WahouseListHeader,
+      'product-list-header': WarehouseListHeader,
       'product-list-body': WarehouseListBody
     },
     data () {
