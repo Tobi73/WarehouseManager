@@ -4,10 +4,11 @@ const api = {};
 
 api.store = (User, Product, Token) => (req, res) => {
     if (Token) {
+        console.log(req.body);
         const product = new Product({
             name: req.body.name,
-            price: req.body.price,
-            quantity: req.body.quantity
+            price: parseInt(req.body.price),
+            quantity: parseInt(req.body.quantity)
         });
 
         product.save(error => {
@@ -24,7 +25,7 @@ api.store = (User, Product, Token) => (req, res) => {
 
 api.getAll = (User, Product, Token) => (req, res) => {
     if (Token) {
-      Product.find({ user_id: req.query.user_id }, (error, client) => {
+      Product.find({}, (error, client) => {
         if (error) return res.status(400).json(error);
         res.status(200).json(client);
         return true;

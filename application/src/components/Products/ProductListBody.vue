@@ -5,12 +5,6 @@
       <div class="md-product-info white--text">{{ product.quantity }}</div>
       <div class="md-product-info white--text">{{ product.price }}</div>
       <div class="l-product-actions">
-        <v-btn small flat color="light-blue lighten-1">
-          <v-icon small>visibility</v-icon>
-        </v-btn>
-        <v-btn small flat color="yellow accent-1">
-          <v-icon>mode_edit</v-icon>
-        </v-btn>
         <v-btn small flat color="red lighten-1">
           <v-icon>delete_forever</v-icon>
         </v-btn>
@@ -33,7 +27,7 @@
     .md-product {
       width: 100%;
       display: flex;
-      flex-direction: column;
+      // flex-direction: column;
       margin: 15px 0;
       @media (min-width: 960px) {
         flex-direction: row;

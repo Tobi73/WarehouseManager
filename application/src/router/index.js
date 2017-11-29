@@ -5,6 +5,7 @@ import * as Auth from '@/components/pages/Authentication';
 // Pages
 import Authentication from '@/components/pages/Authentication/Authentication';
 import Home from '@/components/pages/Home';
+import Product from '@/components/pages/Products/Products';
 
 // Components
 import Header from '@/components/Header';
@@ -32,6 +33,14 @@ const router =  new Router({
       path: '/login',
       name: 'Authentication',
       component: Authentication,
+    },
+    {
+      path: '/product',
+      name: 'Product',
+      component: Product,
+      meta: {
+        requiredAuth: true
+      }
     },
   ],
 });

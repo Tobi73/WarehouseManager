@@ -10,13 +10,17 @@
       </v-flex>
 
       <v-flex xs12 offset-md1 md1>
-        <v-btn block color="light-blue lighten-1">Products</v-btn>
+        <v-btn block color="light-blue lighten-1" @click.native="addProduct()">Add</v-btn>
+      </v-flex>
+
+      <v-flex xs12 offset-md1 md1>
+        <v-btn block color="light-blue lighten-1" @click.native="showModal = true">Export</v-btn>
       </v-flex>
 
       <v-flex xs12 offset-md1 md1>
         <v-btn block color="red lighten-1 white--text" @click.native="submitSignout()">Sign out</v-btn>
       </v-flex>
-    </v-layout>
+    </v-layout> 
   </header>
 </template>
 
@@ -26,12 +30,16 @@
     data () {
       return {
         search: '',
-        status: ''
+        status: '',
+        showModal: false
       }
     },
     methods: {
       submitSignout () {
         Authentication.signout(this, '/login')
+      },
+      addProduct () {
+        this.$router.push('/product')
       }
     }
   }
