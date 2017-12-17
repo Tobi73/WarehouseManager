@@ -1,6 +1,6 @@
 <template>
   <section class="l-product-body">
-    <div class="md-product" v-if="products != null" v-for="product in products">
+      <div class="md-product" v-if="products != null" v-for="product in products">
       <div class="md-product-info white--text">{{ product.name }}</div>
       <div class="md-product-info white--text">{{ product.quantity }}</div>
       <div class="md-product-info white--text">{{ product.price }}</div>

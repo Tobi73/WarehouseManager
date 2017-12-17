@@ -20,6 +20,7 @@
   import Authentication from '@/components/pages/Authentication'
   import WarehouseListHeader from './../Products/ProductListHeader'
   import WarehouseListBody from './../Products/ProductListBody'
+  import EventBus from './../../Bus';
   const WarehouseManagerAPI = `http://${window.location.hostname}:3002`
   export default {
     components: {
@@ -32,9 +33,14 @@
       }
     },
     mounted () {
-      this.getAllProducts()
+      this.getAllProducts(),
+      EventBus.$on('search', this.searchHandler);
     },
     methods: {
+      searchHandler (filtered) {
+        console.log(filtered);
+        this.products = filtered;
+      },
       getAllProducts () {
         Axios.get(`${WarehouseManagerAPI}/api/v1/products`, {
           headers: { 'Authorization': Authentication.getAuthenticationHeader(this) },

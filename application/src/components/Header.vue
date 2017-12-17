@@ -5,7 +5,8 @@
         <v-text-field v-model="search"
                       label="Search"
                       append-icon="search"
-                      color="light-blue lighten-1">
+                      color="light-blue lighten-1"
+                      v-on:keyup.enter="searchPressed">
         </v-text-field>
       </v-flex>
 
@@ -27,6 +28,7 @@
 <script>
   import Authentication from '@/components/pages/Authentication';
   import Axios from 'axios';
+  import EventBus from './../Bus';
   const WarehouseManagerAPI = `http://${window.location.hostname}:3002`;
   export default {
     data () {
@@ -43,13 +45,29 @@
       addProduct () {
         this.$router.push('/product')
       },
+      searchHandler (response) {
+        console.log(response.data);
+        EventBus.$emit('search', response.data);
+      },
+      searchPressed () {
+        Axios.get(`${WarehouseManagerAPI}/api/v1/products/search`,  {
+            headers: { 'Authorization': Authentication.getAuthenticationHeader(this) },
+            params: { user_id: this.$cookie.get('user_id'), name: this.search }
+        })
+        .then( this.searchHandler).catch( function(response) {
+            console.log(this);
+            console.log(response);
+            this.snackbar = true;
+            this.message = response.data.message;
+        });
+      },
       exportProducts () {
         Axios.get(`${WarehouseManagerAPI}/api/v1/products/export`,  {
             headers: { 'Authorization': Authentication.getAuthenticationHeader(this) },
             params: { user_id: this.$cookie.get('user_id') },
             responseType: 'arraybuffer'
         })
-        .then(response => {
+        .then( function(response) {
             let blob = new Blob([response.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' } )
             let link = document.createElement('a')
             link.href = window.URL.createObjectURL(blob)
@@ -57,9 +75,9 @@
             link.click()
             window.URL.revokeObjectURL(blob);
             link.remove();
-        }).catch(({ response: {data} }) => {
+        }).catch( function(response) {
             this.snackbar = true;
-            this.message = data.message;
+            this.message = response.data.message;
         });
       }
     }
