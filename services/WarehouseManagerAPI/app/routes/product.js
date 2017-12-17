@@ -1,12 +1,16 @@
 const passport = require('passport'),
 config = require('@config'),
-models = require('@WarehouseManager/app/setup');
+models = require('@WarehouseManager/app/setup'),
+controller = require('@WarehouseManager/app/api/product.js'),
+router = require('express').Router;
 
-module.exports = (app) => {
-const api = app.WarehouseManagerAPI.app.api.product;
+const app = router();
 
-app.route('/api/v1/products')
-.post(passport.authenticate('jwt', config.session), api.store(models.User, models.Product, app.get('warehousesecret')))
-.get(passport.authenticate('jwt', config.session), api.getAll(models.User, models.Product, app.get('warehousesecret')))
-.get('/search', passport.authenticate('jwt', config.session), api.find(models.User, models.Product, app.get('warehousesecret')));
+app.get('/', controller.getAll(models.Product));
+app.post('/', controller.store(models.Product));
+app.get('/search', controller.find(models.Product));
+app.get('/export', controller.export(models.Product));
+
+module.exports = (main) => {
+    return app;
 }

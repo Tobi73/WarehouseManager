@@ -1,45 +1,55 @@
 const mongoose = require('mongoose');
+const fs = require('fs');
+const XlsxTemplate = require('xlsx-template');
+const path = require('path');
 
 const api = {};
 
-api.store = (User, Product, Token) => (req, res) => {
-    if (Token) {
-        console.log(req.body);
-        const product = new Product({
-            name: req.body.name,
-            price: parseInt(req.body.price),
-            quantity: parseInt(req.body.quantity)
-        });
+api.store = (Product) => (req, res) => {
+    const product = new Product({
+        name: req.body.name,
+        price: parseInt(req.body.price),
+        quantity: parseInt(req.body.quantity)
+    });
 
-        product.save(error => {
-            if (error) return res.status(400).json(error);
+    product.save(error => {
+        if (error) return res.status(400).json(error);
             res.status(200).json({success: true, 
                                     message: 'Product was added'});
-            
-        })
-    } else { 
-        return res.status(403).send({success: false, message: 'Unauthorized'});
-    }
+    })
 }
 
 
-api.getAll = (User, Product, Token) => (req, res) => {
-    if (Token) {
-      Product.find({}, (error, client) => {
+api.getAll = (Product) => (req, res) => {
+    Product.find({}, (error, client) => {
         if (error) return res.status(400).json(error);
         res.status(200).json(client);
         return true;
-      })
-    } else return res.status(403).send({ success: false, message: 'Unauthorized' });
+    })
   }
 
-api.find = (User, Product, Token) => (req, res) => {
-    if (Token) {
-        Product.find({name: new RegExp(`^${req.params.name}$`, "i")}, (error, products) => {
+api.find = (Product) => (req, res) => {
+    console.log(req.query);
+    Product.find({'name' : new RegExp(req.query.name, 'i')}, (error, products) => {
+        if (error) return res.status(400).json(error);
+        res.status(200).json(products);
+    })
+}
+
+api.export = (Product) => (req, res) => {
+    fs.readFile(path.join(__dirname, '..','..', 'static', 'export.xlsx'), (err, data) => {
+        var template = new XlsxTemplate(data);
+        var sheetNumber = 1;
+        var values = Product.find({}, (error, products) => {
             if (error) return res.status(400).json(error);
-            res.status(200).json(products);
+            var values = {
+                products
+            }
+            template.substitute(sheetNumber, values);
+            const report = template.generate();
+            res.status(200).type('xlsx').send(new Buffer(report, 'binary'));
         })
-    } else return res.status(403).send({ success: false, message: 'Unauthorized' });
+    });
 }
   
 module.exports = api;

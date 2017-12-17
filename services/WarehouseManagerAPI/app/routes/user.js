@@ -1,10 +1,13 @@
 const passport = require('passport'),
       config = require('@config'),
-      models = require('@WarehouseManager/app/setup');
+      models = require('@WarehouseManager/app/setup')
+      controller = require('@WarehouseManager/app/api/user.js'),
+      router = require('express').Router;
 
-module.exports = (app) => {
-    const api = app.WarehouseManagerAPI.app.api.user;
+const app = router();
 
-    app.route('/api/v1/signup')
-       .post(api.signup(models.User));
+app.post('/', controller.signup(models.User));
+
+module.exports = (main) => {
+      return app;
 }

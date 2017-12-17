@@ -1,11 +1,11 @@
 const models = require('@WarehouseManager/app/setup');
+const controller = require('@WarehouseManager/app/api/auth.js');
+const router = require('express').Router;
 
-module.exports = (app) => {
-    const api = app.WarehouseManagerAPI.app.api.auth;
+const app = router();
 
-    app.route('/')
-       .get((req, res) => res.send('Warehouse manager API'));
+app.post('/', controller.login(models.User));
 
-    app.route('/api/v1/auth')
-       .post(api.login(models.User));    
-};
+module.exports = (main) => {
+    return app;
+}
