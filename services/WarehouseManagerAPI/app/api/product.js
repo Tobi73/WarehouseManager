@@ -32,5 +32,14 @@ api.getAll = (User, Product, Token) => (req, res) => {
       })
     } else return res.status(403).send({ success: false, message: 'Unauthorized' });
   }
+
+api.find = (User, Product, Token) => (req, res) => {
+    if (Token) {
+        Product.find({name: new RegExp(`^${req.params.name}$`, "i")}, (error, products) => {
+            if (error) return res.status(400).json(error);
+            res.status(200).json(products);
+        })
+    } else return res.status(403).send({ success: false, message: 'Unauthorized' });
+}
   
-  module.exports = api;
+module.exports = api;
