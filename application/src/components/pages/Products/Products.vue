@@ -1,7 +1,7 @@
 <template>
   <div class="l-auth-container">
     <div class="l-auth">
-      <v-form v-model="validLogin">
+      <v-form>
         <v-text-field label="Name"
                       v-model="product.name"
                       :rules="rules"
@@ -45,23 +45,23 @@
        data () {
            return {
                snackbar: false,
-               validLogin: false,
-               validSignUp: false,
                rules: [(value) => !!value || 'This field is required'],
                product: {
                    name: '',
                    quantity: '',
                    price: ''
                },
-               newUser: {
-                   username: '',
-                   password: ''
-               },
                message: '',
            }
        },
        methods: {
            addProduct () {
+                if(!this.validateProduct())
+                {
+                    this.snackbar = true;
+                    this.message = 'Input for new product is incorrect';
+                    return;
+                }
                 Axios.post(`${WarehouseManagerAPI}/api/v1/products`, this.product, {
                     headers: { 'Authorization': Authentication.getAuthenticationHeader(this) },
                     params: { user_id: this.$cookie.get('user_id') }
@@ -73,7 +73,12 @@
                     this.message = data.message;
                 });
            },
-
+           validateProduct() {
+               var reg = new RegExp('^[0-9]+$');
+               return reg.test(this.product.quantity) &&
+                      reg.test(this.product.price) &&
+                      this.product.name.trim().length
+           },
            cancel () {
                this.$router.push('/')
            }

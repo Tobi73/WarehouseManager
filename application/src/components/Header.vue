@@ -46,7 +46,6 @@
         this.$router.push('/product')
       },
       searchHandler (response) {
-        console.log(response.data);
         EventBus.$emit('search', response.data);
       },
       searchPressed () {
@@ -54,9 +53,10 @@
             headers: { 'Authorization': Authentication.getAuthenticationHeader(this) },
             params: { user_id: this.$cookie.get('user_id'), name: this.search }
         })
-        .then( this.searchHandler ).catch((response) => {
-            // Handle errors?
-            // Nah, too lazy
+        .then((response) => {
+          EventBus.$emit('search', response.data);
+        }).catch((err) => {
+          EventBus.$emit('error', err.data);
         });
       },
       exportProducts () {
@@ -73,9 +73,8 @@
             link.click()
             window.URL.revokeObjectURL(blob);
             link.remove();
-        }).catch( (response) => {
-          // Handle errors? 
-          // Nah, too lazy
+        }).catch((err) => {
+          EventBus.$emit('error', err.data);
         });
       }
     }

@@ -11,6 +11,12 @@
         <product-list-header slot="product-list-header"></product-list-header>
         <product-list-body slot="product-list-body" :products="products"></product-list-body>
       </product-list>
+      <v-snackbar timeout="6000"
+                bottom="bottom"
+                color="red lighten-1"
+                v-model="snackbar">
+      {{ message }}
+    </v-snackbar>
     </div>
   </main>
 </template>
@@ -29,18 +35,24 @@
     },
     data () {
       return {
-        products: []
+        products: [],
+        snackbar: false,
+        message: '',
       }
     },
     mounted () {
       this.getAllProducts(),
       EventBus.$on('search', this.searchHandler),
-      EventBus.$on('delete', this.getAllProducts)
+      EventBus.$on('delete', this.getAllProducts),
+      EventBus.$on('error', this.errorHandler)
     },
     methods: {
       searchHandler (filtered) {
-        console.log(filtered);
         this.products = filtered;
+      },
+      errorHandler (error) {
+        this.snackbar = true;
+        this.message = error.message;
       },
       getAllProducts () {
         Axios.get(`${WarehouseManagerAPI}/api/v1/products`, {
