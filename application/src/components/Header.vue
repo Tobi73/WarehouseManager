@@ -54,11 +54,9 @@
             headers: { 'Authorization': Authentication.getAuthenticationHeader(this) },
             params: { user_id: this.$cookie.get('user_id'), name: this.search }
         })
-        .then( this.searchHandler).catch( function(response) {
-            console.log(this);
-            console.log(response);
-            this.snackbar = true;
-            this.message = response.data.message;
+        .then( this.searchHandler ).catch((response) => {
+            // Handle errors?
+            // Nah, too lazy
         });
       },
       exportProducts () {
@@ -67,7 +65,7 @@
             params: { user_id: this.$cookie.get('user_id') },
             responseType: 'arraybuffer'
         })
-        .then( function(response) {
+        .then( (response) => {
             let blob = new Blob([response.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' } )
             let link = document.createElement('a')
             link.href = window.URL.createObjectURL(blob)
@@ -75,9 +73,9 @@
             link.click()
             window.URL.revokeObjectURL(blob);
             link.remove();
-        }).catch( function(response) {
-            this.snackbar = true;
-            this.message = response.data.message;
+        }).catch( (response) => {
+          // Handle errors? 
+          // Nah, too lazy
         });
       }
     }

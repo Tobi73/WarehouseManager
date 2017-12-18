@@ -34,7 +34,8 @@
     },
     mounted () {
       this.getAllProducts(),
-      EventBus.$on('search', this.searchHandler);
+      EventBus.$on('search', this.searchHandler),
+      EventBus.$on('delete', this.getAllProducts)
     },
     methods: {
       searchHandler (filtered) {

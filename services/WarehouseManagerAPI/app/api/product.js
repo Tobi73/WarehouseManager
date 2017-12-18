@@ -36,6 +36,13 @@ api.find = (Product) => (req, res) => {
     })
 }
 
+api.delete = (Product) => (req, res) => {
+    Product.remove({_id: req.query.id}, (error) => {
+        if (error) return res.status(400).json(error);
+        res.status(200).end();
+    })
+}
+
 api.export = (Product) => (req, res) => {
     fs.readFile(path.join(__dirname, '..','..', 'static', 'export.xlsx'), (err, data) => {
         var template = new XlsxTemplate(data);

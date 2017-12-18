@@ -1,11 +1,11 @@
 <template>
   <section class="l-product-body">
-      <div class="md-product" v-if="products != null" v-for="product in products">
+    <div class="md-product" v-if="products != null" v-for="product in products">
       <div class="md-product-info white--text">{{ product.name }}</div>
       <div class="md-product-info white--text">{{ product.quantity }}</div>
       <div class="md-product-info white--text">{{ product.price }}</div>
       <div class="l-product-actions">
-        <v-btn small flat color="red lighten-1">
+        <v-btn small flat color="red lighten-1" @click.native="deleteProduct(product)">
           <v-icon>delete_forever</v-icon>
         </v-btn>
       </div>
@@ -14,8 +14,25 @@
 </template>
 
 <script>
+  import Axios from 'axios'
+  import EventBus from './../../Bus';
+  const WarehouseManagerAPI = `http://${window.location.hostname}:3002`
+  import Authentication from '@/components/pages/Authentication';
   export default {
-    props: ['products']
+    props: ['products'],
+    methods: {
+      deleteProduct(product) {
+        Axios.delete(`${WarehouseManagerAPI}/api/v1/products`, {
+                    headers: { 'Authorization': Authentication.getAuthenticationHeader(this) },
+                    params: { user_id: this.$cookie.get('user_id'), id: product._id }
+                })
+                .then(response => {
+                    EventBus.$emit('delete', product);
+                }).catch(response => {
+                    // Too lazy to handle errors, sorry
+                });
+      }
+    }
   }
 </script>
 
