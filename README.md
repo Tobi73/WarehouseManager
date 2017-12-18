@@ -1,6 +1,4 @@
-# warehousemanager
-
-> Warehouse manager
+# Warehouse Manager
 
 ## Требования:
 
